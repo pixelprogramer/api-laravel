@@ -59,7 +59,7 @@ class UserController extends Controller {
         $password = (!is_null($json) && isset($parametros->password)) ? $parametros->password : null;
         $getToken = (!is_null($json) && isset($parametros->gettoken)) ? $parametros->gettoken : true;
         
-        //Cifrar password
+        //Cifrar password-
         $pwd = hash('sha256', $password);
         if (!is_null($email) && !is_null($password)) {
             $signup=$jwt->singup($email, $pwd);

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use App\User;
-use App\Helpers\jwtAuth;
+use App\Helpers\JwtAuth;
 
 class UserController extends Controller {
 
@@ -52,7 +52,7 @@ class UserController extends Controller {
     }
 
     public function login(Request $resultado) {
-        $jwt = new jwtAuth();
+        $jwt = new JwtAuth();
         $json = $resultado->input('json', null);
         $parametros = json_decode($json);
         $email = (!is_null($json) && isset($parametros->email)) ? $parametros->email : null;

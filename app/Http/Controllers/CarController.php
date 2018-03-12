@@ -15,13 +15,16 @@ class CarController extends Controller
         $jwt = new JwtAuth();
         $chechk=$jwt->checkToken($hash);
         if ($chechk==true) {
-            echo 'Se autentico de forma correcta';
+            $car = Car::all();
+            return response()->json(array(
+                
+            ),200);
         } else {
             
             echo 'Error en la autentificacion';
             
         }
-        die();
+        
     }
     public function store(Request $resultado)
     {

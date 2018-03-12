@@ -48,7 +48,7 @@ class CarController extends Controller
           if ($validacion->fails()) {
               return response()->json($validacion->errors(),400);
           }
-          //Guardar coche
+          //Guardar coche DB
           $user=$jwt->checkToken($codigoAutentificacion, true);
           $car =  new Car();
           $car->user_id_fk=$user->sub;

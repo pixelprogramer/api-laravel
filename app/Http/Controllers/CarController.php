@@ -15,9 +15,9 @@ class CarController extends Controller
         $jwt = new JwtAuth();
         $chechk=$jwt->checkToken($hash);
         if ($chechk==true) {
-            $car = Car::all();
+            $car = Car::all()->load('User');
             return response()->json(array(
-                
+                'cars'=>$car,
             ),200);
         } else {
             
@@ -25,6 +25,13 @@ class CarController extends Controller
             
         }
         
+    }
+    public function show($id)
+    {
+        $car = Car::find($id)->load('user');
+        return response()->json(Array(
+            'car'=>$car
+        ),200);
     }
     public function store(Request $resultado)
     {

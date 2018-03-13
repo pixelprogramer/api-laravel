@@ -25,10 +25,23 @@ class CarController extends Controller {
     }
 
     public function show($id) {
-        $car = Car::find($id)->load('user');
-        return response()->json(Array(
-                    'car' => $car
-                        ), 200);
+        $car = Car::find($id);
+        if (!is_null($car)) {
+            $car = Car::find($id)->load('user');
+            $data = array(
+                'car'=>$car,
+                'codigo' => 200,
+                'estado' => 'procesado',
+                'Mensaje' => 'Se encontraron registros'
+            );
+        } else {
+            $data = array(
+                'codigo' => 400,
+                'estado' => 'Error!',
+                'Mensaje' => 'No exixste ningun registro con este ID: '.$id
+            );
+        }
+        return response()->json($data, 200);
     }
 
     function update(Request $resultado, $id) {
@@ -41,7 +54,7 @@ class CarController extends Controller {
             $json = $resultado->input('json', null);
             $parametros = json_decode($json);
             $parametroValida = json_decode($json, true);
-            $car = new Car();
+
             //Validando datos que ingresan por el Request
             $validacion = \Validator::make($parametroValida, [
                         'title' => 'required',
@@ -50,15 +63,49 @@ class CarController extends Controller {
                         'status' => 'required'
             ]);
             //Llenamos el modelo con los datos que llegaron en la request
-            $car->title=$parametros->title;
-            $car->description = $parametros->description;
-            $car->price=$parametros->price;
-            $car->status=$parametros->status;
+            $car = Car::where('id', $id)->update($parametroValida);
+            $data = array(
+                'car' => $parametros,
+                'codigo' => 400,
+                'estado' => 'success',
+                'mensaje' => 'Se actualizo de forma correcta'
+            );
         } else {
             $data = array(
                 'codigo' => 400,
                 'estado' => 'fail',
                 'mensaje' => 'Error en la autentificacion del usuario'
+            );
+        }
+        return response()->json($data, 200);
+    }
+
+    public function destroy(Request $resultado, $id) {
+        $hash = $resultado->header('Autorizacion', null);
+        $jwt = new JwtAuth();
+        $validacionUsuario = $jwt->checkToken($hash);
+
+        if ($validacionUsuario == true) {
+            $car = Car::find($id);
+            if (!is_null($car)) {
+                $car = Car::where('id', $id)->delete();
+                $data = array(
+                    'codigo' => 200,
+                    'estado' => 'procesado',
+                    'mensaje' => 'Se elimino de forma correcta el coche'
+                );
+            } else {
+                $data = array(
+                    'codigo' => 400,
+                    'estado' => 'Error',
+                    'mensaje' => 'Este registro no existe'
+                );
+            }
+        } else {
+            $data = array(
+                'code' => 400,
+                'estado' => 'error',
+                'mensaje' => 'Error en la autentificacion'
             );
         }
         return response()->json($data, 200);

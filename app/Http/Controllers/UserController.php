@@ -30,9 +30,10 @@ class UserController extends Controller {
             if (count($iseet_user) <= 0) {
                 $usuario->save();
                 $data = array(
+                    'mensaje' => 'Usuario creado de forma correcta',
                     'status' => 'success',
                     'code' => '200',
-                    'mensaje' => 'Usuario creado de forma correcta'
+
                 );
             } else {
                 $data = array(

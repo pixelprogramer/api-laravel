@@ -31,11 +31,11 @@ class JwtAuth {
             'exp' => time() + (7*24*60*60),
             );
             $jwt =JWT::encode($token, $this->key,'HS256');
-            $decode=    JWT::decode($jwt, $this->key,array('HS256'));
-            if ($getToken==true) {
-                return $decode;
-            }else if ($getToken==false || $getToken==null) {
+            $decode= JWT::decode($jwt, $this->key,array('HS256'));
+            if (is_null($getToken) || $getToken==false) {
                 return $jwt;
+            }else if ($getToken==true || !is_null($getToken)) {
+                return $decode;
             }
         } else {
             return array(
@@ -49,6 +49,7 @@ class JwtAuth {
     public function checkToken($jwt,$getIdentity = false)
     {
         $auth=false;
+        $decode=null;
         try {
             $decode= JWT::decode($jwt, $this->key,array('HS256'));
         } catch (\UnexpectedValueException $e) {
@@ -64,12 +65,9 @@ class JwtAuth {
         {
             $auth=false;
         }
-        if ($getIdentity) {
+        if ($getIdentity==true) {
             return $decode;
         }
-
-
-
         return $auth;
     }
 
